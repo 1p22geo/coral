@@ -83,8 +83,14 @@ X_train, X_test, y_train, y_test = train_test_split(
 
 # Create and train the model
 model = create_model(input_shape=num_words, num_classes=2)
+try:
+    model = tf.keras.models.load_model("model.keras")
+    print("Loaded model.keras")
+except OSError:
+    print("Failed to load model.keras, creating new.")
 while True:
     model.fit(X_train, y_train, epochs=1, batch_size=2, verbose=1)
+    model.save("model.keras")
 
     converter = tf.lite.TFLiteConverter.from_keras_model(model)
     tflite_model = converter.convert()
